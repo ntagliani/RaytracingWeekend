@@ -22,7 +22,42 @@ RawImage generateGradient(int x, int y)
 	return outputImage;
 }
 
+
+float hit_sphere(const Ray& r, const Point& center, float radius)
+{
+	// (- b + -sqrt(b ^ 2 - 4ac)) / 2a
+	// b^2 >= 4ac
+	// (x - center)^2 = radius*radius
+	// x =  raycenter + direction * t
+	// (raycenter + t_direction - spherecenter)^2 = radius^2
+	
+	// a = direction * direction
+	// b = 2direction * (raycenter - spherecenter)
+	// c = (raycenter - spherecenter)^2 - radius^2
+	// a 2 factor can be simplified in the quadratic formula
+
+	const auto d = r.origin() - center;
+	const auto a = r.direction().length_squared();
+	const auto half_b = dot(r.direction(), d); // b/2
+	const auto c = d.length_squared() - radius * radius;
+	const auto discriminant = half_b * half_b - a * c;
+	if (discriminant < 0.0f)
+	{
+		return -1.0f;
+	}
+	// returns the closest point on the sphere (-b - sqrt(...)) instad of (-b + sqrt(...))
+	return (-half_b - sqrt(discriminant)) / a;
+}
+
 Color ray_color(const Ray& r) {
+	const vec3f sphere_centre{0.0f, 0.0f, -1.0f};
+	const float sphere_radius = 0.5f;
+	if (const float hit_distance = hit_sphere(r, sphere_centre, sphere_radius); hit_distance >= 0)
+	{
+		const auto normal = unit_vector(r.at(hit_distance) - sphere_centre);
+
+		return 0.5f * (normal + 1.0f);
+	}
 	const vec3 unit_direction = unit_vector(r.direction());
 	const float a = 0.5f * (1.0f + unit_direction.y());
 	const Color start_color{ 1.0f, 1.0f, 1.0f };
@@ -34,7 +69,6 @@ int main(int argc, char** argv)
 {
 	std::cout << "Preparing Image" << std::endl;
 
-	// const auto image = generateGradient(100, 500);
 	const int image_width = 1024;
 	const float aspect_ratio = 16.0f / 9;
 	const int image_height = static_cast<int>(image_width / aspect_ratio);
