@@ -4,7 +4,9 @@
 #include "vec3.h"
 #include "Ray.h"
 #include "PPMImageSerializer.h"
-
+#include "hittable.h"
+#include "HittableCollection.h"
+#include "Sphere.h"
 
 RawImage generateGradient(int x, int y)
 {
@@ -22,41 +24,11 @@ RawImage generateGradient(int x, int y)
 	return outputImage;
 }
 
-
-float hit_sphere(const Ray& r, const Point& center, float radius)
-{
-	// (- b + -sqrt(b ^ 2 - 4ac)) / 2a
-	// b^2 >= 4ac
-	// (x - center)^2 = radius*radius
-	// x =  raycenter + direction * t
-	// (raycenter + t_direction - spherecenter)^2 = radius^2
-	
-	// a = direction * direction
-	// b = 2direction * (raycenter - spherecenter)
-	// c = (raycenter - spherecenter)^2 - radius^2
-	// a 2 factor can be simplified in the quadratic formula
-
-	const auto d = r.origin() - center;
-	const auto a = r.direction().length_squared();
-	const auto half_b = dot(r.direction(), d); // b/2
-	const auto c = d.length_squared() - radius * radius;
-	const auto discriminant = half_b * half_b - a * c;
-	if (discriminant < 0.0f)
+Color ray_color(const Ray& r, const Hittable& h) {
+	HitRecord record;
+	if (h.hit(r, 0, 100.0f, &record))
 	{
-		return -1.0f;
-	}
-	// returns the closest point on the sphere (-b - sqrt(...)) instad of (-b + sqrt(...))
-	return (-half_b - sqrt(discriminant)) / a;
-}
-
-Color ray_color(const Ray& r) {
-	const vec3f sphere_centre{0.0f, 0.0f, -1.0f};
-	const float sphere_radius = 0.5f;
-	if (const float hit_distance = hit_sphere(r, sphere_centre, sphere_radius); hit_distance >= 0)
-	{
-		const auto normal = unit_vector(r.at(hit_distance) - sphere_centre);
-
-		return 0.5f * (normal + 1.0f);
+		return 0.5f * (record.m_normal+ 1.0f);
 	}
 	const vec3 unit_direction = unit_vector(r.direction());
 	const float a = 0.5f * (1.0f + unit_direction.y());
@@ -89,6 +61,10 @@ int main(int argc, char** argv)
 	const vec3f first_pixel_center = viewport_upper_left + (delta_u + delta_v) / 2.0f;
 
 	RawImage image{ image_width, image_height };
+
+	HittableCollection collection;
+	collection.addHittable(std::make_unique<Sphere>(Point{ 0.0f, 0.0f, -10.0f }, 4.0f));
+	collection.addHittable(std::make_unique<Sphere>(Point{ 5.0f, 0.0f, -12.0f }, 2.0f));
 	for (int y = 0; y < image.height(); y++)
 	{
 		for (int x = 0; x < image.width(); x++)
@@ -96,7 +72,7 @@ int main(int argc, char** argv)
 			const vec3f pixel_pos = first_pixel_center + (delta_u * static_cast<float>(x)) + (delta_v * static_cast<float>(y));
 			const vec3f direction = pixel_pos - camera_position;
 			const Ray r{ camera_position, direction };
-			const auto color = ray_color(r);
+			const auto color = ray_color(r, collection);
 			image.set(x, y) = color;
 		}
 	}
