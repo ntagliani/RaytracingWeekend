@@ -8,7 +8,7 @@ Sphere::Sphere(Point center, float radius)
 
 Sphere::~Sphere() = default;
 
-bool Sphere::hit(const Ray& ray, float ray_min, float ray_max, HitRecord* record) const
+bool Sphere::hit(const Ray& ray, const Interval& interval, HitRecord* record) const
 {
 	// (- b + -sqrt(b ^ 2 - 4ac)) / 2a
 // b^2 >= 4ac
@@ -33,10 +33,10 @@ bool Sphere::hit(const Ray& ray, float ray_min, float ray_max, HitRecord* record
 	// returns the closest point on the sphere (-b - sqrt(...)) instad of (-b + sqrt(...))
 	const auto sqrt_discriminant = sqrt(discriminant);
 	auto root = (-half_b - sqrt_discriminant) / a;
-	if (root < ray_min || root > ray_max)
+	if (interval.excludes(root))
 	{
 		root = (-half_b + sqrt_discriminant) / a;
-		if (root < ray_min || root > ray_max)
+		if (interval.excludes(root))
 			return false;
 	}
 
