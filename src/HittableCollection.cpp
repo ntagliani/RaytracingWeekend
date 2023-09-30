@@ -10,14 +10,14 @@ size_t HittableCollection::addHittable(std::unique_ptr<Hittable> hittable)
 	return size;
 }
 
-bool HittableCollection::hit(const Ray& r, float ray_min, float ray_max, HitRecord* record) const 
+bool HittableCollection::hit(const Ray& r, const Interval& interval, HitRecord* record) const 
 {
 	HitRecord tmp;
-	float closest = ray_max;
+	float closest = interval.max;
 	bool hit = false;
 	for (auto& hittable : m_collection)
 	{
-		if (hittable->hit(r, ray_min, closest, &tmp))
+		if (hittable->hit(r, Interval(interval.min, closest), &tmp))
 		{
 			hit = true;
 			closest = tmp.m_ray_distance;
