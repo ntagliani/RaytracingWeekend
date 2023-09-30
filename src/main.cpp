@@ -26,7 +26,7 @@ RawImage generateGradient(int x, int y)
 
 Color ray_color(const Ray& r, const Hittable& h) {
 	HitRecord record;
-	if (h.hit(r, 0, 100.0f, &record))
+	if (h.hit(r, Interval::universe, &record))
 	{
 		return 0.5f * (record.m_normal+ 1.0f);
 	}

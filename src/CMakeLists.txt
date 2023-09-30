@@ -3,6 +3,7 @@ set(SOURCES
     HittableCollection.cpp
     HittableCollection.h
     Image.h
+    Interval.h
     main.cpp
     PPMImageSerialier.cpp
     PPMImageSerializer.h
