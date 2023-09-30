@@ -1,10 +1,8 @@
-#pragma once
-
 #include <fstream>
 
 #include "PPMImageSerializer.h"
 #include "Image.h"
-#include "vec3.h"
+#include "Vec3.h"
 
 namespace PPMImageSerializer
 {

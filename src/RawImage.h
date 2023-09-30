@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Image.h"
-#include "vec3.h"
+#include "Vec3.h"
 
 #include <vector>
 

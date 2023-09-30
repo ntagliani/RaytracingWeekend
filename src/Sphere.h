@@ -1,5 +1,5 @@
 #pragma once
-#include "hittable.h"
+#include "Hittable.h"
 
 
 class Sphere : public Hittable
