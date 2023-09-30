@@ -1,4 +1,6 @@
 set(SOURCES
+	Camera.cpp
+	Camera.h
     Hittable.h
     HittableCollection.cpp
     HittableCollection.h

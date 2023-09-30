@@ -35,6 +35,8 @@ public:
 
 	static const IntervalT empty;
 	static const IntervalT universe;
+	static const IntervalT forwardInfinite;
+	static const IntervalT backInfinite;
 
 };
 
@@ -43,5 +45,11 @@ const IntervalT<T> IntervalT<T>::empty = IntervalT{};
 
 template<typename T>
 const IntervalT<T> IntervalT<T>::universe = IntervalT{ -std::numeric_limits<T>::infinity(),  std::numeric_limits<T>::infinity()};
+
+template<typename T>
+const IntervalT<T> IntervalT<T>::forwardInfinite = IntervalT{0,  std::numeric_limits<T>::infinity() };
+
+template<typename T>
+const IntervalT<T> IntervalT<T>::backInfinite = IntervalT{-std::numeric_limits<T>::infinity(), 0};
 
 using Interval = IntervalT<float>;
