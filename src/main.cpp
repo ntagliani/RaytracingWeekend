@@ -1,10 +1,10 @@
 #include <iostream>
 
 #include "RawImage.h"
-#include "vec3.h"
+#include "Vec3.h"
 #include "Ray.h"
 #include "PPMImageSerializer.h"
-#include "hittable.h"
+#include "Hittable.h"
 #include "HittableCollection.h"
 #include "Sphere.h"
 
