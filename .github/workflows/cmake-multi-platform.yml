@@ -43,7 +43,9 @@ jobs:
             c_compiler: clang
           - os: ubuntu-latest
             c_compiler: cl
-
+    permissions:
+      pull-requests: write
+      
     steps:
     - uses: actions/checkout@v3
 
@@ -68,6 +70,11 @@ jobs:
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
+    - name: Approve pull request
+      uses: fastify/github-action-merge-dependabot@v3.3.0
+      with:
+        approve-only: true
+        
     #- name: Test
     #  working-directory: ${{ steps.strings.outputs.build-output-dir }}
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
