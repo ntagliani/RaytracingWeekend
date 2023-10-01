@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 
 	ConsoleProgressBar progressBar("Rendering");
 	// default settings
-	CameraSettings settings{ /* focal_length = */ 1.0f, /*aspect_ratio =*/ 16.0f / 9, /* viewport_heigh = */ 2.0f , /*image_width = */ 1024};
+	CameraSettings settings{ /* focal_length = */ 1.0f, /*aspect_ratio =*/ 16.0f / 9, /* viewport_heigh = */ 2.0f , /*image_width = */ 1024, /*antialias_samples = */ 10};
 	Camera camera;
 	camera.setProgress(&progressBar);
 	camera.init(camera_position, look_direction, settings);

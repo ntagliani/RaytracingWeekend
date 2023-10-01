@@ -33,6 +33,13 @@ public:
 		return min < value && value < max;
 	}
 
+	T clamp(const T& value) const
+	{
+		if (value < min) return min;
+		if (value > max) return max;
+		return value;
+	}
+
 	static const IntervalT empty;
 	static const IntervalT universe;
 	static const IntervalT forwardInfinite;
