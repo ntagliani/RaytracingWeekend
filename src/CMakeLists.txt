@@ -1,6 +1,8 @@
 set(SOURCES
 	Camera.cpp
 	Camera.h
+	ConsoleProgressBar.cpp
+	ConsoleProgressBar.h
     Hittable.h
     HittableCollection.cpp
     HittableCollection.h
@@ -9,6 +11,8 @@ set(SOURCES
     main.cpp
     PPMImageSerialier.cpp
     PPMImageSerializer.h
+	Progress.h
+	Progression.h
     RawImage.cpp
     RawImage.h
     Ray.cpp

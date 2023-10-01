@@ -2,6 +2,8 @@
 #include "Ray.h"
 #include "Hittable.h"
 #include "Image.h"
+#include "Progress.h"
+#include "Progression.h"
 
 Camera::Camera() = default;
 void Camera::init(const Point& position, const vec3f& lookDirection, const CameraSettings& settings)
@@ -35,10 +37,22 @@ int Camera::height() const
 	return m_height;
 }
 
+void Camera::setProgress(Progress* progress)
+{
+	m_progress = progress;
+}
+
 void Camera::render(const Hittable& hittable, Image* outImage) 
 {
 	if (outImage == nullptr || m_width != outImage->width() || m_height != outImage->height())
 		return;
+
+	BiLinearProgression progress({ m_height, m_width });
+	if (m_progress != nullptr)
+	{
+		progress.setValue({0,0});
+		m_progress->initialize(progress);
+	}
 
 	for (int y = 0; y < m_height; y++)
 	{
@@ -51,6 +65,16 @@ void Camera::render(const Hittable& hittable, Image* outImage)
 			const auto color = rayColor(r, hittable);
 			outImage->set(x, y) = color;
 		}
+		if (m_progress != nullptr)
+		{
+			progress.setValue({ y + 1, m_width });
+			m_progress->update(progress);
+		}
+	}
+	if (m_progress != nullptr)
+	{
+		progress.setValue({ m_height, m_width });
+		m_progress->complete(progress);
 	}
 }
 
