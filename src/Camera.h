@@ -7,6 +7,7 @@
 class Hittable;
 class Image;
 class Ray;
+class Progress;
 
 struct CameraSettings
 {
@@ -22,6 +23,7 @@ public:
 	
 	Camera();
 	void init(const Point& position, const vec3f& lookDirection, const CameraSettings& settings);
+	void setProgress(Progress* p);
 	void lookAt(const Point& position);
 	void move(const Point& position);
 	void moveAndLook(const Point& position, const Point& target);
@@ -42,4 +44,6 @@ private:
 	vec3f m_delta_u;
 	vec3f m_delta_v;
 	vec3f m_first_pixel_center;
+
+	Progress* m_progress = nullptr;
 };
