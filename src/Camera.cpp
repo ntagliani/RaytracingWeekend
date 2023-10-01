@@ -5,6 +5,13 @@
 #include "Progress.h"
 #include "Progression.h"
 
+#include <random>
+
+namespace camera_cpp
+{
+
+}
+
 Camera::Camera() = default;
 void Camera::init(const Point& position, const vec3f& lookDirection, const CameraSettings& settings)
 {
@@ -59,10 +66,11 @@ void Camera::render(const Hittable& hittable, Image* outImage)
 		for (int x = 0; x < m_width; x++)
 		{
 			const vec3f pixel_pos = m_first_pixel_center + (m_delta_u * static_cast<float>(x)) + (m_delta_v * static_cast<float>(y));
-			const vec3f direction = pixel_pos - m_position;
-			const Ray r{ m_position, direction };
+			const auto color = antialias(pixel_pos, hittable);
+			//const vec3f direction = pixel_pos - m_position;
+			//const Ray r{ m_position, direction };
 
-			const auto color = rayColor(r, hittable);
+			//const auto color = rayColor(r, hittable);
 			outImage->set(x, y) = color;
 		}
 		if (m_progress != nullptr)
@@ -92,6 +100,34 @@ Color Camera::rayColor(const Ray& r, const Hittable& hittable)const
 	const Color start_color{ 1.0f, 1.0f, 1.0f };
 	const Color end_color{ 0.5f, 0.7f, 1.0f };
 	return (1.0f - a) * start_color + a * end_color;
+
+}
+
+Color Camera::antialias(const vec3f& pixel_pos, const Hittable& hittable) const
+{
+
+	if (m_settings.antialias_samples <= 1)
+	{
+		const vec3f direction = pixel_pos - m_position;
+		const Ray r{ m_position, direction };
+		return rayColor(r, hittable);
+	}
+
+	static std::random_device rd;  // Will be used to obtain a seed for the random number engine
+	static std::minstd_rand  gen(rd());
+	static std::uniform_real_distribution<float> dis(-0.5f, 0.5f);
+
+	Color sample;
+	for (int i = 0; i < m_settings.antialias_samples; i++)
+	{
+		const vec3f rand_u = (m_delta_u * dis(gen));
+		const vec3f rand_v = (m_delta_v * dis(gen));
+		const vec3f direction = (pixel_pos + rand_u + rand_v )- m_position;
+		const Ray r{ m_position, direction };
+		sample += rayColor(r, hittable);
+	}
+	return sample / static_cast<float>(m_settings.antialias_samples);
+	
 }
 
 void Camera::updateSettings()

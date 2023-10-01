@@ -15,6 +15,7 @@ struct CameraSettings
 	float aspect_ratio = 16.0f/9;
 	float viewport_height = 2.0f;
 	int width = 1024;
+	int antialias_samples = 10;
 };
 
 class Camera
@@ -34,7 +35,9 @@ public:
 	Color rayColor(const Ray& r, const Hittable& hittable)const;
 
 private:
+	Color antialias(const vec3f& pixel_pos, const Hittable& hittable) const;
 	void updateSettings();
+
 	CameraSettings m_settings;
 	Point m_position{ 0,0,0 };
 	vec3f m_lookDirection{ 0,0,-1 };
