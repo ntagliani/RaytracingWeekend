@@ -4,6 +4,8 @@
 #include <cmath>
 #include <ostream>
 
+#include "UniformRandom.h"
+
 template <typename T, size_t N>
 class vec
 {
@@ -69,7 +71,17 @@ public:
 	T length_squared() const {
 		return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
 	}
+
+	static vec3 random()
+	{
+		return vec3(unaryRand<T>(), unaryRand<T>(), unaryRand<T>());
+	}
 	
+	static vec3 random(T min, T max)
+	{
+		return vec3(scaledUnaryRand<T>(min, max), scaledUnaryRand<T>(min, max), scaledUnaryRand<T>(min, max));
+	}
+
 	T e[3];
 };
 

@@ -19,6 +19,7 @@ set(SOURCES
     Ray.h
     Sphere.cpp
     Sphere.h
+	UniformRandom.h
     Vec3.h)
 
 add_executable(RaytracingDemo ${SOURCES})

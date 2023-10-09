@@ -5,6 +5,7 @@
 #include "Vec3.h"
 #include "Progress.h"
 #include "Progression.h"
+#include "Interval.h"
 
 namespace PPMImageSerializer
 {
@@ -18,14 +19,15 @@ namespace PPMImageSerializer
 		}
 		std::ofstream outFile(path, std::ios::trunc);
 		outFile << "P3\n" << image.width() << ' ' << image.height() << "\n255\n";
+		Interval intensity(0.0f, 0.999f);
 		for (int y = 0; y < image.height(); y++)
 		{
 			for (int x = 0; x < image.width(); x++)
 			{
 				auto& pixel = image.get(x, y);
-				outFile << static_cast<int>(255.999f * pixel.x()) << ' ' 
-					<< static_cast<int>(255.999f * pixel.y()) << ' ' << 
-					static_cast<int>(255.999f * pixel.z()) << '\n';
+				outFile << static_cast<int>(255 * intensity.clamp(pixel.x())) << ' ' 
+					<< static_cast<int>(255 * intensity.clamp(pixel.y())) << ' ' << 
+					static_cast<int>(255 * intensity.clamp(pixel.z())) << '\n';
 			}
 			if (progress != nullptr)
 			{
