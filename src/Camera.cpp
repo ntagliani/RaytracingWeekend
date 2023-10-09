@@ -4,6 +4,7 @@
 #include "Image.h"
 #include "Progress.h"
 #include "Progression.h"
+#include "UniformRandom.h"
 
 #include <random>
 
@@ -117,11 +118,12 @@ Color Camera::antialias(const vec3f& pixel_pos, const Hittable& hittable) const
 	static std::minstd_rand  gen(rd());
 	static std::uniform_real_distribution<float> dis(-0.5f, 0.5f);
 
+
 	Color sample;
 	for (int i = 0; i < m_settings.antialias_samples; i++)
 	{
-		const vec3f rand_u = (m_delta_u * dis(gen));
-		const vec3f rand_v = (m_delta_v * dis(gen));
+		const vec3f rand_u = (m_delta_u * scaledUnaryRand(-0.5f, 0.5f));
+		const vec3f rand_v = (m_delta_v * scaledUnaryRand(-0.5f, 0.5f));
 		const vec3f direction = (pixel_pos + rand_u + rand_v )- m_position;
 		const Ray r{ m_position, direction };
 		sample += rayColor(r, hittable);
