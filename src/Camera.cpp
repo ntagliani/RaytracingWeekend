@@ -49,6 +49,19 @@ void Camera::setProgress(Progress* progress)
 	m_progress = progress;
 }
 
+Ray Camera::generateRay(int x, int y) const
+{
+	const auto target = m_first_pixel_center + (m_delta_u * static_cast<float>(x)) + (m_delta_v * static_cast<float>(y));
+	return Ray{ m_position, target - m_position };
+}
+
+void Camera::fillRay(Ray& out, int x, int y) const
+{
+	const auto target = m_first_pixel_center + (m_delta_u * static_cast<float>(x)) + (m_delta_v * static_cast<float>(y));
+	out.setOrigin(m_position);
+	out.setDirection(target - m_position);
+}
+
 void Camera::render(const Hittable& hittable, Image* outImage) 
 {
 	if (outImage == nullptr || m_width != outImage->width() || m_height != outImage->height())
@@ -86,12 +99,30 @@ void Camera::render(const Hittable& hittable, Image* outImage)
 	}
 }
 
-Color Camera::rayColor(const Ray& r, const Hittable& hittable)const
+vec3f randomBounceHit(const vec3f& surfaceNormal)
+{
+	vec3f bounce = vec3f::random().normalize();
+	if (dot(surfaceNormal, bounce) > 0)
+		return bounce;
+	else
+		return -bounce;
+}
+
+vec3f lambertianDistribution(const vec3f& surfaceNormal)
+{
+	return surfaceNormal + vec3f::random().normalize();
+}
+
+Color Camera::rayColor(const Ray& r, const Hittable& hittable, int max_bounces)const
 {
 	HitRecord record;
-	if (hittable.hit(r, Interval::forwardInfinite, &record))
+	if (max_bounces == 0)
+		return Color(0.0f, 0.0f, 0.0f);
+
+	if (hittable.hit(r, Interval::toForwardInfinity(0.001f), &record))
 	{
-		return 0.5f * (record.m_normal + 1.0f);
+		const vec3f direction = randomBounceHit(record.m_normal);
+		return 0.5f * rayColor({ record.m_hit_point, direction }, hittable, max_bounces -1);
 	}
 
 	// fade from white to light blue to simulate the sky
@@ -110,7 +141,7 @@ Color Camera::antialias(const vec3f& pixel_pos, const Hittable& hittable) const
 	{
 		const vec3f direction = pixel_pos - m_position;
 		const Ray r{ m_position, direction };
-		return rayColor(r, hittable);
+		return rayColor(r, hittable, 20);
 	}
 
 	static std::random_device rd;  // Will be used to obtain a seed for the random number engine
@@ -124,7 +155,7 @@ Color Camera::antialias(const vec3f& pixel_pos, const Hittable& hittable) const
 		const vec3f rand_v = (m_delta_v * dis(gen));
 		const vec3f direction = (pixel_pos + rand_u + rand_v )- m_position;
 		const Ray r{ m_position, direction };
-		sample += rayColor(r, hittable);
+		sample += rayColor(r, hittable, 10);
 	}
 	return sample / static_cast<float>(m_settings.antialias_samples);
 	

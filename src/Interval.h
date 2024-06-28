@@ -15,6 +15,16 @@ public:
 
 	}
 
+	static IntervalT toForwardInfinity(T min)
+	{
+		return IntervalT{ min,  std::numeric_limits<T>::infinity() };
+	}
+
+	static IntervalT toBackwardInfinity(T min)
+	{
+		return IntervalT{ -std::numeric_limits<T>::infinity(), max};
+	}
+
 	T min{ std::numeric_limits<T>::infinity() };
 	T max{ -std::numeric_limits<T>::infinity()};
 

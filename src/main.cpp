@@ -1,48 +1,57 @@
 #include <iostream>
+#include <chrono>
 
-#include "RawImage.h"
-#include "Vec3.h"
-#include "PPMImageSerializer.h"
-#include "Hittable.h"
-#include "HittableCollection.h"
-#include "Sphere.h"
 #include "Camera.h"
 #include "ConsoleProgressBar.h"
+#include "HittableCollection.h"
+#include "PPMImageSerializer.h"
+#include "RawImage.h"
+#include "Sphere.h"
+#include "Vec3.h"
 
-int main(int argc, char** argv)
-{
-	std::cout << "Rendering Image" << std::endl;
+int main(int argc, char **argv) {
 
-	const vec3f camera_position{ 0,0,0 };
-	const vec3f look_direction{ 0,0,-1.0f };
+  std::cout << "Rendering Image" << std::endl;
+  const auto startTime = std::chrono::high_resolution_clock::now();
 
-	ConsoleProgressBar progressBar("Rendering");
-	// default settings
-	CameraSettings settings{ /* focal_length = */ 1.0f, /*aspect_ratio =*/ 16.0f / 9, /* viewport_heigh = */ 2.0f , /*image_width = */ 1024, /*antialias_samples = */ 10};
-	Camera camera;
-	camera.setProgress(&progressBar);
-	camera.init(camera_position, look_direction, settings);
+  const vec3f camera_position{0, 0, 0};
+  const vec3f look_direction{0, 0, -1.0f};
 
-	RawImage image{ camera.width(), camera.height()};
+  ConsoleProgressBar progressBar("Rendering");
+  // default settings
+  CameraSettings settings{/* focal_length = */ 1.0f,
+                          /*aspect_ratio =*/16.0f / 9,
+                          /* viewport_heigh = */ 2.0f, 
+                          /*image_width = */ 400,
+                          /*antialias_samples = */ 50};
+  Camera camera;
+  camera.init(camera_position, look_direction, settings);
+  camera.setProgress(&progressBar);
 
+  RawImage image{camera.width(), camera.height()};
 
-	HittableCollection collection;
-	collection.addHittable(std::make_unique<Sphere>(Point{ 0.0f, 0.0f, -10.0f }, 4.0f));
-	collection.addHittable(std::make_unique<Sphere>(Point{ 5.0f, 0.0f, -12.0f }, 2.0f));
-	
-	camera.render(collection, &image);
-	
-	std::cout << "Serializing Image" << std::endl;
+  HittableCollection collection;
+  collection.addHittable(
+     std::make_unique<Sphere>(Point{0.0f, 0.0f, -1.0f}, 0.5f));
+  collection.addHittable(
+      std::make_unique<Sphere>(Point{0.8f, 0.0f, -1.35f}, .35f));
+  collection.addHittable(
+      std::make_unique<Sphere>(Point{ 0.0f, -100.5f, 0.0f }, 100.0f));
 
-	ConsoleProgressBar progressBarSerialization("Serializing");
-	if (PPMImageSerializer::serialize(image, "test.ppm", &progressBarSerialization))
-	{
-		std::cout << "Done" << std::endl;
-	}
-	else {
-		std::cout << "ERROR" << std::endl;
-		return 1;
-	}
+  camera.render(collection, &image);
 
-	return 0;
+  std::cout << "Serializing Image" << std::endl;
+
+  ConsoleProgressBar progressBarSerialization("Serializing");
+  if (PPMImageSerializer::serialize(image, "test.ppm",
+                                    &progressBarSerialization)) {
+    std::cout << "Done" << std::endl;
+  } else {
+    std::cout << "ERROR" << std::endl;
+    return 1;
+  }
+
+  auto duration = std::chrono::high_resolution_clock::now() - startTime;
+  std::cout << "Generation took: " << duration.count() / 1e9 << "s" << std::endl;
+  return 0;
 }
