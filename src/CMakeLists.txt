@@ -13,10 +13,13 @@ set(SOURCES
     PPMImageSerializer.h
 	Progress.h
 	Progression.h
+    Random.h
     RawImage.cpp
     RawImage.h
     Ray.cpp
     Ray.h
+    Renderer.cpp
+    Renderer.h
     Sphere.cpp
     Sphere.h
     Vec3.h)

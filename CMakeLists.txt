@@ -17,6 +17,9 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 # Compiler flags
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
+# generate the command commands exports
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 set(CMAKE_CXX_STANDARD 17)
 
 #include(CacheVariables)

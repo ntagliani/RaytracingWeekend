@@ -1,17 +1,134 @@
 #pragma once
 
+#include "Random.h"
+
 #include <cstdint>
 #include <cmath>
+#include <functional>
 #include <ostream>
+#include <type_traits>
+#include <cstring>
+
+#include <array>
+
+#define DECLARE_MEMBER_ACCESSOR(name, pos, fieldname) \
+    template <typename U = T> \
+	typename std::enable_if_t<(N>pos), U> name() const { return fieldname[pos]; } \
+    template <typename U = T> \
+	typename std::enable_if_t<(N>pos), U>& name() { return fieldname[pos]; }
 
 template <typename T, size_t N>
 class vec
 {
 public:
 
+	using value_type = T;
+	using size_type = size_t;
+	static constexpr size_type size = N;
+	using reference = value_type&;
+	using const_reference = const value_type&;
+	using pointer = value_type*;
+	using const_pointer = const value_type*;
+
+	using iterator = pointer;
+	using const_iterator = const_pointer;
+
+	vec()
+	{
+		memset(m_data, 0, bytes());
+	}
+
+	vec(const std::initializer_list<T> values)
+	{
+		if (values.size() == N)
+		{
+			size_t i = 0;
+			for(auto v : values)
+			{	
+				m_data[i++] = v;
+			}
+		}
+	}
+
+	template <typename Arg, typename... Args>
+	vec(Arg value, Args... args)
+	{
+		assign<0>(value, args...);
+	}
+		
+	vec(const vec& v) = default;
+	vec& operator=(const vec& v) = default;
+	vec(vec&&) = default;
+	vec& operator=(vec&&) = default;
+
+    DECLARE_MEMBER_ACCESSOR(x, 0, m_data);
+    DECLARE_MEMBER_ACCESSOR(y, 1, m_data);
+    DECLARE_MEMBER_ACCESSOR(z, 2, m_data);
+    DECLARE_MEMBER_ACCESSOR(w, 3, m_data);
+
+    DECLARE_MEMBER_ACCESSOR(a, 0, m_data);
+    DECLARE_MEMBER_ACCESSOR(b, 1, m_data);
+    DECLARE_MEMBER_ACCESSOR(c, 2, m_data);
+    DECLARE_MEMBER_ACCESSOR(d, 3, m_data);
+
+    size_t bytes() const
+    {
+        return N * sizeof(T);
+    }
+
+    const T* data() const 
+    {
+        return &m_data[0];
+    }
+
+	/// Iterators
+
+	iterator begin()
+	{
+		return &*m_data.begin();
+	}
+	
+	const_iterator begin() const
+	{
+		return cbegin();
+	}
+
+	const_iterator cbegin() const
+	{
+		return &*m_data.begin();
+	}
+
+
+	iterator end()
+	{
+		return &*m_data.begin() + N;
+	}
+
+	const_iterator end() const
+	{
+		return cend();
+	}
+
+	const_iterator cend() const
+	{
+		return &*m_data.cbegin() + N;
+	}
 private:
-	T m_data[N];
+	template<size_t idx = 0, typename Arg = T, typename... Args>
+	__forceinline void assign(Arg value, Args... args)
+	{
+		m_data[idx] = value;
+		assign<idx + 1>(args...);
+	}
+
+	template<size_t idx, typename = std::enable_if_t<(idx <= N)>>
+	__forceinline void assign()
+	{
+	}
+
+	std::array<T, N> m_data;
 };
+
 
 template <typename T>
 class vec3
@@ -69,7 +186,23 @@ public:
 	T length_squared() const {
 		return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
 	}
-	
+
+	vec3& normalize()
+	{
+		*this /= length();
+		return *this;
+	}
+
+	static vec3 random()
+	{
+		return vec3(RandomT<T>::value(), RandomT<T>::value(), RandomT<T>::value());
+	}
+
+	static vec3 random(T min, T max)
+	{
+		return vec3(RandomT<T>::value(min, max), RandomT<T>::value(min, max), RandomT<T>::value(min, max));
+	}
+
 	T e[3];
 };
 
