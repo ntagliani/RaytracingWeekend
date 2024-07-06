@@ -3,25 +3,29 @@ set(SOURCES
 	Camera.h
 	ConsoleProgressBar.cpp
 	ConsoleProgressBar.h
-    Hittable.h
-    HittableCollection.cpp
-    HittableCollection.h
-    Image.h
-    Interval.h
-    main.cpp
-    PPMImageSerialier.cpp
-    PPMImageSerializer.h
+  HitRecord.h
+  Hittable.h
+  HittableCollection.cpp
+  HittableCollection.h
+  Image.h
+  Interval.h
+  main.cpp
+  LambertianMaterial.cpp
+  LambertianMaterial.h
+  Material.h
+  PPMImageSerialier.cpp
+  PPMImageSerializer.h
 	Progress.h
 	Progression.h
-    Random.h
-    RawImage.cpp
-    RawImage.h
-    Ray.cpp
-    Ray.h
-    Renderer.cpp
-    Renderer.h
-    Sphere.cpp
-    Sphere.h
-    Vec3.h)
+  Random.h
+  RawImage.cpp
+  RawImage.h
+  Ray.cpp
+  Ray.h
+  Renderer.cpp
+  Renderer.h
+  Sphere.cpp
+  Sphere.h
+  Vec3.h)
 
 add_executable(RaytracingDemo ${SOURCES})

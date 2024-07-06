@@ -1,9 +1,11 @@
-#include <iostream>
 #include <chrono>
+#include <iostream>
+#include <memory>
 
 #include "Camera.h"
 #include "ConsoleProgressBar.h"
 #include "HittableCollection.h"
+#include "LambertianMaterial.h"
 #include "PPMImageSerializer.h"
 #include "RawImage.h"
 #include "Sphere.h"
@@ -21,7 +23,7 @@ int main(int argc, char **argv) {
   // default settings
   CameraSettings settings{/* focal_length = */ 1.0f,
                           /*aspect_ratio =*/16.0f / 9,
-                          /* viewport_heigh = */ 2.0f, 
+                          /* viewport_heigh = */ 2.0f,
                           /*image_width = */ 400,
                           /*antialias_samples = */ 50};
   Camera camera;
@@ -30,13 +32,19 @@ int main(int argc, char **argv) {
 
   RawImage image{camera.width(), camera.height()};
 
+  // red Lambertian material
+  const auto lambertianMaterial =
+      std::make_shared<LambertianMaterial>(Color(1.0f, 0.0, 0.0));
+  // soil material (gree-ish)
+  const auto soilMaterial =
+      std::make_shared<LambertianMaterial>(Color(.2f, 0.8, 0.0));
   HittableCollection collection;
-  collection.addHittable(
-     std::make_unique<Sphere>(Point{0.0f, 0.0f, -1.0f}, 0.5f));
-  collection.addHittable(
-      std::make_unique<Sphere>(Point{0.8f, 0.0f, -1.35f}, .35f));
-  collection.addHittable(
-      std::make_unique<Sphere>(Point{ 0.0f, -100.5f, 0.0f }, 100.0f));
+  collection.addHittable(std::make_unique<Sphere>(Point{0.0f, 0.0f, -1.0f},
+                                                  0.5f, lambertianMaterial));
+  collection.addHittable(std::make_unique<Sphere>(Point{0.8f, 0.0f, -1.35f},
+                                                  .35f, lambertianMaterial));
+  collection.addHittable(std::make_unique<Sphere>(Point{0.0f, -100.5f, 0.0f},
+                                                  100.0f, soilMaterial));
 
   camera.render(collection, &image);
 
@@ -52,6 +60,7 @@ int main(int argc, char **argv) {
   }
 
   auto duration = std::chrono::high_resolution_clock::now() - startTime;
-  std::cout << "Generation took: " << duration.count() / 1e9 << "s" << std::endl;
+  std::cout << "Generation took: " << duration.count() / 1e9 << "s"
+            << std::endl;
   return 0;
 }
