@@ -81,13 +81,13 @@ public:
 
 private:
   template <size_t idx = 0, typename Arg = T, typename... Args>
-  __forceinline void assign(Arg value, Args... args) {
+  inline void assign(Arg value, Args... args) {
     m_data[idx] = value;
     assign<idx + 1>(args...);
   }
 
   template <size_t idx, typename = std::enable_if_t<(idx <= N)>>
-  __forceinline void assign() {}
+  inline void assign() {}
 
   std::array<T, N> m_data;
 };

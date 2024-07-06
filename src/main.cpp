@@ -34,10 +34,10 @@ int main(int argc, char **argv) {
 
   // red Lambertian material
   const auto lambertianMaterial =
-      std::make_shared<LambertianMaterial>(Color(1.0f, 0.0, 0.0));
+      std::make_shared<LambertianMaterial>(Color(1.0f, 0.0f, 0.0f));
   // soil material (gree-ish)
   const auto soilMaterial =
-      std::make_shared<LambertianMaterial>(Color(.2f, 0.8, 0.0));
+      std::make_shared<LambertianMaterial>(Color(.2f, 0.8f, 0.0f));
   HittableCollection collection;
   collection.addHittable(std::make_unique<Sphere>(Point{0.0f, 0.0f, -1.0f},
                                                   0.5f, lambertianMaterial));
