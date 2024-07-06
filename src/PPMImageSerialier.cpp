@@ -15,15 +15,15 @@ template <typename T> T linearToGamma(T in)
     return T(0);
 }
 
-inline void writePixel(std::ofstream &out, const Color &color)
+inline void writePixel(std::ofstream& out, const Color& color)
 {
     out << static_cast<int>(255.999f * linearToGamma(color.x())) << ' '
         << static_cast<int>(255.999f * linearToGamma(color.y())) << ' '
         << static_cast<int>(255.999f * linearToGamma(color.z())) << '\n';
 }
 
-bool serialize(const Image &image, const std::filesystem::path &path,
-               Progress *progress)
+bool serialize(const Image& image, const std::filesystem::path& path,
+               Progress* progress)
 {
     BiLinearProgression progression(
         {static_cast<int>(image.height()), static_cast<int>(image.width())});
@@ -38,7 +38,7 @@ bool serialize(const Image &image, const std::filesystem::path &path,
     {
         for (int x = 0; x < image.width(); x++)
         {
-            const auto &pixel = image.get(x, y);
+            const auto& pixel = image.get(x, y);
             writePixel(outFile, pixel);
         }
         if (progress != nullptr)

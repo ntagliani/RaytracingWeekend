@@ -14,20 +14,20 @@ namespace camera_cpp
 }
 
 Camera::Camera() = default;
-void Camera::init(const Point &position, const vec3f &lookDirection,
-                  const CameraSettings &settings)
+void Camera::init(const Point& position, const vec3f& lookDirection,
+                  const CameraSettings& settings)
 {
     moveAndLook(position, lookDirection);
     m_settings = settings;
     updateSettings();
 }
 
-void Camera::lookAt(const Point &target)
+void Camera::lookAt(const Point& target)
 {
     m_lookDirection = unit_vector(target - m_position);
 }
-void Camera::move(const Point &position) { m_position = position; }
-void Camera::moveAndLook(const Point &position, const Point &target)
+void Camera::move(const Point& position) { m_position = position; }
+void Camera::moveAndLook(const Point& position, const Point& target)
 {
     move(position);
     lookAt(target);
@@ -37,7 +37,7 @@ int Camera::width() const { return m_width; }
 
 int Camera::height() const { return m_height; }
 
-void Camera::setProgress(Progress *progress) { m_progress = progress; }
+void Camera::setProgress(Progress* progress) { m_progress = progress; }
 
 Ray Camera::generateRay(int x, int y) const
 {
@@ -47,7 +47,7 @@ Ray Camera::generateRay(int x, int y) const
     return Ray{m_position, target - m_position};
 }
 
-void Camera::fillRay(Ray &out, int x, int y) const
+void Camera::fillRay(Ray& out, int x, int y) const
 {
     const auto target = m_first_pixel_center +
                         (m_delta_u * static_cast<float>(x)) +
@@ -56,7 +56,7 @@ void Camera::fillRay(Ray &out, int x, int y) const
     out.setDirection(target - m_position);
 }
 
-void Camera::render(const Hittable &hittable, Image *outImage)
+void Camera::render(const Hittable& hittable, Image* outImage)
 {
     if (outImage == nullptr || m_width != outImage->width() ||
         m_height != outImage->height())
@@ -109,7 +109,7 @@ vec3f lambertianDistribution(const vec3f &surfaceNormal) {
 }
 */
 
-Color Camera::rayColor(const Ray &r, const Hittable &hittable,
+Color Camera::rayColor(const Ray& r, const Hittable& hittable,
                        int max_bounces) const
 {
     HitRecord record;
@@ -134,7 +134,7 @@ Color Camera::rayColor(const Ray &r, const Hittable &hittable,
     return (1.0f - a) * start_color + a * end_color;
 }
 
-Color Camera::antialias(const vec3f &pixel_pos, const Hittable &hittable) const
+Color Camera::antialias(const vec3f& pixel_pos, const Hittable& hittable) const
 {
 
     if (m_settings.antialias_samples <= 1)

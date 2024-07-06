@@ -11,7 +11,7 @@
 #include "Sphere.h"
 #include "Vec3.h"
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 
     std::cout << "Rendering Image" << std::endl;

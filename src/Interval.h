@@ -22,13 +22,13 @@ template <typename T> class IntervalT
     T min{std::numeric_limits<T>::infinity()};
     T max{-std::numeric_limits<T>::infinity()};
 
-    bool contains(const T &value) const { return min <= value && value <= max; }
+    bool contains(const T& value) const { return min <= value && value <= max; }
 
-    bool excludes(const T &value) const { return value < min || value > max; }
+    bool excludes(const T& value) const { return value < min || value > max; }
 
-    bool surrounds(const T &value) const { return min < value && value < max; }
+    bool surrounds(const T& value) const { return min < value && value < max; }
 
-    T clamp(const T &value) const
+    T clamp(const T& value) const
     {
         if (value < min)
             return min;
