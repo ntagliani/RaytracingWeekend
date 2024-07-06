@@ -8,8 +8,8 @@ Sphere::Sphere(Point center, float radius, std::shared_ptr<Material> material)
 
 Sphere::~Sphere() = default;
 
-bool Sphere::hit(const Ray &ray, const Interval &interval,
-                 HitRecord *record) const
+bool Sphere::hit(const Ray& ray, const Interval& interval,
+                 HitRecord* record) const
 {
     // (- b + -sqrt(b ^ 2 - 4ac)) / 2a
     // b^2 >= 4ac
@@ -44,7 +44,7 @@ bool Sphere::hit(const Ray &ray, const Interval &interval,
 
     if (record != nullptr)
     {
-        auto &r = *record;
+        auto& r = *record;
         r.m_ray_distance = root;
         r.m_hit_point = ray.at(root);
         r.m_normal = (record->m_hit_point - m_center) / m_radius;

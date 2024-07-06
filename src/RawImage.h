@@ -13,8 +13,8 @@ class RawImage : public Image
 
     size_t width() const override;
     size_t height() const override;
-    const Pixel &get(int x, int y) const override;
-    Pixel &set(int x, int y) override;
+    const Pixel& get(int x, int y) const override;
+    Pixel& set(int x, int y) override;
 
   private:
     int m_width{0};

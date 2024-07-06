@@ -15,7 +15,7 @@
     {                                                                          \
         return fieldname[pos];                                                 \
     }                                                                          \
-    template <typename U = T> typename std::enable_if_t<(N > pos), U> &name()  \
+    template <typename U = T> typename std::enable_if_t<(N > pos), U>& name()  \
     {                                                                          \
         return fieldname[pos];                                                 \
     }
@@ -26,10 +26,10 @@ template <typename T, size_t N> class vec
     using value_type = T;
     using size_type = size_t;
     static constexpr size_type size = N;
-    using reference = value_type &;
-    using const_reference = const value_type &;
-    using pointer = value_type *;
-    using const_pointer = const value_type *;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using const_pointer = const value_type*;
 
     using iterator = pointer;
     using const_iterator = const_pointer;
@@ -53,10 +53,10 @@ template <typename T, size_t N> class vec
         assign<0>(value, args...);
     }
 
-    vec(const vec &v) = default;
-    vec &operator=(const vec &v) = default;
-    vec(vec &&) = default;
-    vec &operator=(vec &&) = default;
+    vec(const vec& v) = default;
+    vec& operator=(const vec& v) = default;
+    vec(vec&&) = default;
+    vec& operator=(vec&&) = default;
 
     DECLARE_MEMBER_ACCESSOR(x, 0, m_data);
     DECLARE_MEMBER_ACCESSOR(y, 1, m_data);
@@ -70,7 +70,7 @@ template <typename T, size_t N> class vec
 
     size_t bytes() const { return N * sizeof(T); }
 
-    const T *data() const { return &m_data[0]; }
+    const T* data() const { return &m_data[0]; }
 
     /// Iterators
 
@@ -112,15 +112,15 @@ template <typename T> class vec3
     T y() const { return e[1]; }
     T z() const { return e[2]; }
 
-    T &x() { return e[0]; }
-    T &y() { return e[1]; }
-    T &z() { return e[2]; }
+    T& x() { return e[0]; }
+    T& y() { return e[1]; }
+    T& z() { return e[2]; }
 
     vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }
     T operator[](int i) const { return e[i]; }
-    T &operator[](int i) { return e[i]; }
+    T& operator[](int i) { return e[i]; }
 
-    vec3 &operator+=(const vec3 &v)
+    vec3& operator+=(const vec3& v)
     {
         e[0] += v.e[0];
         e[1] += v.e[1];
@@ -128,7 +128,7 @@ template <typename T> class vec3
         return *this;
     }
 
-    vec3 &operator+=(const T t)
+    vec3& operator+=(const T t)
     {
         e[0] += t;
         e[1] += t;
@@ -136,7 +136,7 @@ template <typename T> class vec3
         return *this;
     }
 
-    vec3 &operator*=(const T t)
+    vec3& operator*=(const T t)
     {
         e[0] *= t;
         e[1] *= t;
@@ -144,7 +144,7 @@ template <typename T> class vec3
         return *this;
     }
 
-    vec3 &operator/=(const T t) { return *this *= 1 / t; }
+    vec3& operator/=(const T t) { return *this *= 1 / t; }
 
     T length() const { return std::sqrt(length_squared()); }
 
@@ -157,7 +157,7 @@ template <typename T> class vec3
                std::fabs(e[2]) < epsilon;
     }
 
-    vec3 &normalize()
+    vec3& normalize()
     {
         *this /= length();
         return *this;
@@ -180,40 +180,40 @@ template <typename T> class vec3
 
 // vec3 Utility Functions
 template <typename T>
-inline std::ostream &operator<<(std::ostream &out, const vec3<T> &v)
+inline std::ostream& operator<<(std::ostream& out, const vec3<T>& v)
 {
     return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
 }
 
 template <typename T>
-inline vec3<T> operator+(const vec3<T> &u, const vec3<T> &v)
+inline vec3<T> operator+(const vec3<T>& u, const vec3<T>& v)
 {
     return vec3<T>(u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2]);
 }
 
-template <typename T> inline vec3<T> operator+(const vec3<T> &u, const T v)
+template <typename T> inline vec3<T> operator+(const vec3<T>& u, const T v)
 {
     return vec3<T>(u.e[0] + v, u.e[1] + v, u.e[2] + v);
 }
 
 template <typename T>
-inline vec3<T> operator-(const vec3<T> &u, const vec3<T> &v)
+inline vec3<T> operator-(const vec3<T>& u, const vec3<T>& v)
 {
     return vec3<T>(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2]);
 }
 
 template <typename T>
-inline vec3<T> operator*(const vec3<T> &u, const vec3<T> &v)
+inline vec3<T> operator*(const vec3<T>& u, const vec3<T>& v)
 {
     return vec3<T>(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]);
 }
 
-template <typename T> inline vec3<T> operator*(T t, const vec3<T> &v)
+template <typename T> inline vec3<T> operator*(T t, const vec3<T>& v)
 {
     return vec3<T>(t * v.e[0], t * v.e[1], t * v.e[2]);
 }
 
-template <typename T> inline vec3<T> operator*(const vec3<T> &v, T t)
+template <typename T> inline vec3<T> operator*(const vec3<T>& v, T t)
 {
     return t * v;
 }
@@ -223,12 +223,12 @@ template <typename T> inline vec3<T> operator/(vec3<T> v, T t)
     return (1 / t) * v;
 }
 
-template <typename T> inline T dot(const vec3<T> &u, const vec3<T> &v)
+template <typename T> inline T dot(const vec3<T>& u, const vec3<T>& v)
 {
     return u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2];
 }
 
-template <typename T> inline vec3<T> cross(const vec3<T> &u, const vec3<T> &v)
+template <typename T> inline vec3<T> cross(const vec3<T>& u, const vec3<T>& v)
 {
     return vec3<T>(u.e[1] * v.e[2] - u.e[2] * v.e[1],
                    u.e[2] * v.e[0] - u.e[0] * v.e[2],

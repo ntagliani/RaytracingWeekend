@@ -7,15 +7,15 @@ ConsoleProgressBar::ConsoleProgressBar(std::string title)
 {
 }
 
-void ConsoleProgressBar::initialize(const Progression &p)
+void ConsoleProgressBar::initialize(const Progression& p)
 {
     displayProgressBar(p.percentage());
 }
-void ConsoleProgressBar::update(const Progression &p)
+void ConsoleProgressBar::update(const Progression& p)
 {
     displayProgressBar(p.percentage());
 }
-void ConsoleProgressBar::complete(const Progression &p)
+void ConsoleProgressBar::complete(const Progression& p)
 {
     displayProgressBar(p.percentage());
     std::cout << std::endl;

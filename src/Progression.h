@@ -26,7 +26,7 @@ class LinearProgression : public Progression
 template <int N> class MultiDimensionalProgression : public Progression
 {
   public:
-    MultiDimensionalProgression(std::array<int, N> &&sizes)
+    MultiDimensionalProgression(std::array<int, N>&& sizes)
         : max_sizes(std::move(sizes))
     {
         static_assert(N > 1, "Use LinearProgression instead");

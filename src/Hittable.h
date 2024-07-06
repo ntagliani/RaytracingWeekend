@@ -10,6 +10,6 @@ class Hittable
   public:
     virtual ~Hittable() = default;
 
-    virtual bool hit(const Ray &r, const Interval &interval,
-                     HitRecord *record) const = 0;
+    virtual bool hit(const Ray& r, const Interval& interval,
+                     HitRecord* record) const = 0;
 };

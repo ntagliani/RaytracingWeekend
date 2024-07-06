@@ -2,14 +2,14 @@
 
 #include "HitRecord.h"
 
-LambertianMaterial::LambertianMaterial(const Color &albedo) : m_albedo(albedo)
+LambertianMaterial::LambertianMaterial(const Color& albedo) : m_albedo(albedo)
 {
 }
 
 LambertianMaterial::~LambertianMaterial() = default;
 
-bool LambertianMaterial::scatter(const Ray &ray, const HitRecord &hitRecord,
-                                 Color &color, Ray &scattered) const
+bool LambertianMaterial::scatter(const Ray& ray, const HitRecord& hitRecord,
+                                 Color& color, Ray& scattered) const
 {
 
     const auto scatterDirection = [&hitRecord]()
