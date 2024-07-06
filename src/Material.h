@@ -5,9 +5,10 @@
 
 class HitRecord;
 
-class Material {
-public:
-  virtual ~Material() = default;
-  virtual bool scatter(const Ray &, const HitRecord &, Color &,
-                       Ray &scattered) const = 0;
+class Material
+{
+  public:
+    virtual ~Material() = default;
+    virtual bool scatter(const Ray &, const HitRecord &, Color &,
+                         Ray &scattered) const = 0;
 };

@@ -11,56 +11,60 @@
 #include "Sphere.h"
 #include "Vec3.h"
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 
-  std::cout << "Rendering Image" << std::endl;
-  const auto startTime = std::chrono::high_resolution_clock::now();
+    std::cout << "Rendering Image" << std::endl;
+    const auto startTime = std::chrono::high_resolution_clock::now();
 
-  const vec3f camera_position{0, 0, 0};
-  const vec3f look_direction{0, 0, -1.0f};
+    const vec3f camera_position{0, 0, 0};
+    const vec3f look_direction{0, 0, -1.0f};
 
-  ConsoleProgressBar progressBar("Rendering");
-  // default settings
-  CameraSettings settings{/* focal_length = */ 1.0f,
-                          /*aspect_ratio =*/16.0f / 9,
-                          /* viewport_heigh = */ 2.0f,
-                          /*image_width = */ 400,
-                          /*antialias_samples = */ 50};
-  Camera camera;
-  camera.init(camera_position, look_direction, settings);
-  camera.setProgress(&progressBar);
+    ConsoleProgressBar progressBar("Rendering");
+    // default settings
+    CameraSettings settings{/* focal_length = */ 1.0f,
+                            /*aspect_ratio =*/16.0f / 9,
+                            /* viewport_heigh = */ 2.0f,
+                            /*image_width = */ 400,
+                            /*antialias_samples = */ 50};
+    Camera camera;
+    camera.init(camera_position, look_direction, settings);
+    camera.setProgress(&progressBar);
 
-  RawImage image{camera.width(), camera.height()};
+    RawImage image{camera.width(), camera.height()};
 
-  // red Lambertian material
-  const auto lambertianMaterial =
-      std::make_shared<LambertianMaterial>(Color(1.0f, 0.0f, 0.0f));
-  // soil material (gree-ish)
-  const auto soilMaterial =
-      std::make_shared<LambertianMaterial>(Color(.2f, 0.8f, 0.0f));
-  HittableCollection collection;
-  collection.addHittable(std::make_unique<Sphere>(Point{0.0f, 0.0f, -1.0f},
-                                                  0.5f, lambertianMaterial));
-  collection.addHittable(std::make_unique<Sphere>(Point{0.8f, 0.0f, -1.35f},
-                                                  .35f, lambertianMaterial));
-  collection.addHittable(std::make_unique<Sphere>(Point{0.0f, -100.5f, 0.0f},
-                                                  100.0f, soilMaterial));
+    // red Lambertian material
+    const auto lambertianMaterial =
+        std::make_shared<LambertianMaterial>(Color(1.0f, 0.0f, 0.0f));
+    // soil material (gree-ish)
+    const auto soilMaterial =
+        std::make_shared<LambertianMaterial>(Color(.2f, 0.8f, 0.0f));
+    HittableCollection collection;
+    collection.addHittable(std::make_unique<Sphere>(Point{0.0f, 0.0f, -1.0f},
+                                                    0.5f, lambertianMaterial));
+    collection.addHittable(std::make_unique<Sphere>(Point{0.8f, 0.0f, -1.35f},
+                                                    .35f, lambertianMaterial));
+    collection.addHittable(std::make_unique<Sphere>(Point{0.0f, -100.5f, 0.0f},
+                                                    100.0f, soilMaterial));
 
-  camera.render(collection, &image);
+    camera.render(collection, &image);
 
-  std::cout << "Serializing Image" << std::endl;
+    std::cout << "Serializing Image" << std::endl;
 
-  ConsoleProgressBar progressBarSerialization("Serializing");
-  if (PPMImageSerializer::serialize(image, "test.ppm",
-                                    &progressBarSerialization)) {
-    std::cout << "Done" << std::endl;
-  } else {
-    std::cout << "ERROR" << std::endl;
-    return 1;
-  }
+    ConsoleProgressBar progressBarSerialization("Serializing");
+    if (PPMImageSerializer::serialize(image, "test.ppm",
+                                      &progressBarSerialization))
+    {
+        std::cout << "Done" << std::endl;
+    }
+    else
+    {
+        std::cout << "ERROR" << std::endl;
+        return 1;
+    }
 
-  auto duration = std::chrono::high_resolution_clock::now() - startTime;
-  std::cout << "Generation took: " << duration.count() / 1e9 << "s"
-            << std::endl;
-  return 0;
+    auto duration = std::chrono::high_resolution_clock::now() - startTime;
+    std::cout << "Generation took: " << duration.count() / 1e9 << "s"
+              << std::endl;
+    return 0;
 }
