@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 3.12)
 project(RaytracingWeekend)
 
 # Version
-set(CoreLib_VERSION_MAJOR 0)
-set(CoreLib_VERSION_MINOR 1)
-set(CoreLib_VERSION_RELEASE 0)
+# set(CoreLib_VERSION_MAJOR 0)
+# set(CoreLib_VERSION_MINOR 1)
+# set(CoreLib_VERSION_RELEASE 0)
 
 # PROJECT_BINARY_DIR --> path from where the cmake command is executed
 
