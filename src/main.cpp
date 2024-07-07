@@ -6,6 +6,7 @@
 #include "ConsoleProgressBar.h"
 #include "HittableCollection.h"
 #include "LambertianMaterial.h"
+#include "MetalMaterial.h"
 #include "PPMImageSerializer.h"
 #include "RawImage.h"
 #include "Sphere.h"
@@ -36,14 +37,17 @@ int main(int argc, char** argv)
     // red Lambertian material
     const auto lambertianMaterial =
         std::make_shared<LambertianMaterial>(Color(1.0f, 0.0f, 0.0f));
+
+    const auto metalMaterial =
+        std::make_shared<MetalMaterial>(Color(1.0f, 200.0f / 256, 90.0f / 256));
     // soil material (gree-ish)
     const auto soilMaterial =
         std::make_shared<LambertianMaterial>(Color(.2f, 0.8f, 0.0f));
     HittableCollection collection;
     collection.addHittable(std::make_unique<Sphere>(Point{0.0f, 0.0f, -1.0f},
                                                     0.5f, lambertianMaterial));
-    collection.addHittable(std::make_unique<Sphere>(Point{0.8f, 0.0f, -1.35f},
-                                                    .35f, lambertianMaterial));
+    collection.addHittable(std::make_unique<Sphere>(Point{1.0f, 0.0f, -1.25f},
+                                                    .35f, metalMaterial));
     collection.addHittable(std::make_unique<Sphere>(Point{0.0f, -100.5f, 0.0f},
                                                     100.0f, soilMaterial));
 
