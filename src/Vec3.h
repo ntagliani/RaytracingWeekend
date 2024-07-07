@@ -247,6 +247,7 @@ template <typename T> inline vec3<T> random_unit_vector()
 
 using vec3f = vec3<float>;
 using vec3d = vec3<double>;
+using vec3i = vec3<int>;
 
 using Pixel = vec3f;
 using Color = vec3f;
