@@ -51,7 +51,7 @@ bool Mesh::hit(const Ray& ray, const Interval& interval,
 std::optional<float> Mesh::rayIntersectsTriangle(const Ray& r,
                                                  const int triangleIndex) const
 {
-    constexpr float epsilon = 1e-6;
+    constexpr float epsilon = 1e-6f;
 
     const auto& tr = m_triangles[triangleIndex];
 
