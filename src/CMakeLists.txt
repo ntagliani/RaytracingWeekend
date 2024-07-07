@@ -13,6 +13,8 @@ set(SOURCES
   LambertianMaterial.cpp
   LambertianMaterial.h
   Material.h
+  Mesh.cpp
+  Mesh.h
   MetalMaterial.cpp
   MetalMaterial.h
   PPMImageSerialier.cpp
