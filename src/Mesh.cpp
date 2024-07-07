@@ -2,7 +2,7 @@
 #include "HitRecord.h"
 
 Mesh::Mesh(const std::vector<vec3f> vertices,
-           const std::vector<vec3f> triangles,
+           const std::vector<vec3i> triangles,
            std::shared_ptr<Material> material)
     : m_vertices(std::move(vertices)), m_triangles(std::move(triangles)),
       m_material(material)
@@ -51,7 +51,7 @@ bool Mesh::hit(const Ray& ray, const Interval& interval,
 std::optional<float> Mesh::rayIntersectsTriangle(const Ray& r,
                                                  const int triangleIndex) const
 {
-    constexpr float epsilon = 1e6;
+    constexpr float epsilon = 1e-6;
 
     const auto& tr = m_triangles[triangleIndex];
 
