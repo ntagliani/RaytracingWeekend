@@ -25,29 +25,60 @@ set(CMAKE_CXX_STANDARD 17)
 #include(CacheVariables)
 #include(FilterFunctions)
 
+add_executable(RaytracingDemo)
+
 if(MSVC)
-  set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /DCORELIB_DEBUG /DWINDOWS /WX")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /DCORELIB_DEBUG /DWINDOWS /WX")
-  set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /DWINDOWS /WX")
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /DWINDOWS /WX")
+  add_compile_options("/WX")
 else()
-  set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DCORELIB_DEBUG")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DCORELIB_DEBUG")
-  # set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DNDEBUG") set(CMAKE_CXX_FLAGS_RELEASE
-  # "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG")
+  add_compile_options("-Werror -Wall")
 endif()
 
-if(NOT OPENGL_SUPPORT)
-  set(CONAN_EXTRA_PARAMS ${CONAN_EXTRA_PARAMS} -o "corelib:opengl_support=False")
+if (WIN32)
+  target_compile_definitions(RaytracingDemo PUBLIC WIN_PLATFORM)
 endif()
 
-if(UNIX)
-  add_compile_options("-Werror")
-endif(UNIX)
+if(UNIX AND NOT APPLE)
+  target_compile_definitions(RaytracingDemo PUBLIC UNIX_PLATFORM)
+endif()
 
 if(APPLE)
   set(CMAKE_MACOSX_RPATH OFF)
-endif(APPLE)
+  target_compile_definitions(RaytracingDemo PUBLIC APPLE_PLATFORM)
+endif()
 
-# configure_file( "${PROJECT_SOURCE_DIR}/src/version.h.in" "${PROJECT_BINARY_DIR}/version.h" )
-add_subdirectory(src)
+set(SOURCES
+	src/Camera.cpp
+	src/Camera.h
+	src/ConsoleProgressBar.cpp
+	src/ConsoleProgressBar.h
+  src/HitRecord.h
+  src/Hittable.h
+  src/HittableCollection.cpp
+  src/HittableCollection.h
+  src/Image.h
+  src/Interval.h
+  src/main.cpp
+  src/LambertianMaterial.cpp
+  src/LambertianMaterial.h
+  src/Material.h
+  src/Mesh.cpp
+  src/Mesh.h
+  src/MetalMaterial.cpp
+  src/MetalMaterial.h
+  src/PPMImageSerialier.cpp
+  src/PPMImageSerializer.h
+	src/Progress.h
+	src/Progression.h
+  src/Random.h
+  src/RawImage.cpp
+  src/RawImage.h
+  src/Ray.cpp
+  src/Ray.h
+  src/Renderer.cpp
+  src/Renderer.h
+  src/Sphere.cpp
+  src/Sphere.h
+  src/Vec3.h )
+
+target_sources(RaytracingDemo PRIVATE ${SOURCES})
+
