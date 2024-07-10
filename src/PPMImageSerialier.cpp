@@ -53,9 +53,9 @@ bool serialize(const Image& image, const std::filesystem::path& path,
         headerSize + (image.width() * image.height() * pixelSize);
     std::vector<char> buffer;
     buffer.resize(totalMemoryBuffer);
-    size_t offset = localSprintf(
-        &buffer[0], totalMemoryBuffer, "P3\n%d %d\n255\n",
-        static_cast<int>(image.width()), static_cast<int>(image.height()));
+    size_t offset = localSprintf(&buffer[0], totalMemoryBuffer,
+                                 "P3\n%" SIZE_T_FMT " %" SIZE_T_FMT "\n255\n",
+                                 image.width(), image.height());
 
     for (int y = 0; y < image.height(); y++)
     {
