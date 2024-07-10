@@ -28,7 +28,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(RaytracingDemo)
 
 if(MSVC)
-  add_compile_options("/WX")
+  add_compile_options("/WX /W4")
 else()
   add_compile_options("-Werror -Wall")
 endif()
@@ -51,6 +51,7 @@ set(SOURCES
 	src/Camera.h
 	src/ConsoleProgressBar.cpp
 	src/ConsoleProgressBar.h
+  src/CommonDefines.h
   src/HitRecord.h
   src/Hittable.h
   src/HittableCollection.cpp
