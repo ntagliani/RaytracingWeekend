@@ -22,32 +22,20 @@ class Camera
     Camera();
     void init(const Point& position, const vec3f& lookDirection,
               const CameraSettings& settings);
-    void setProgress(Progress* p);
     void lookAt(const Point& position);
     void move(const Point& position);
     void moveAndLook(const Point& position, const Point& target);
-    Ray generateRay(int x, int y) const;
-    void fillRay(Ray& out, int x, int y) const;
 
-    void render(const Hittable& hittable, Image* outImage);
-    int width() const;
-    int height() const;
-    Color rayColor(const Ray& r, const Hittable& hittable,
-                   int max_bounces) const;
+    Point position() const;
+    vec3f lookDirection() const;
+    float focalLength() const;
+    float viewportHeight() const;
 
   private:
-    Color antialias(const vec3f& pixel_pos, const Hittable& hittable) const;
-    void updateSettings();
+    float m_focalLength = 1.0f;
+    float m_viewportHeight = 2.0f;
 
     CameraSettings m_settings;
     Point m_position{0, 0, 0};
     vec3f m_lookDirection{0, 0, -1};
-    int m_width{0};
-    int m_height{0};
-
-    vec3f m_delta_u;
-    vec3f m_delta_v;
-    vec3f m_first_pixel_center;
-
-    Progress* m_progress = nullptr;
 };
