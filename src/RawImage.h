@@ -11,10 +11,10 @@ class RawImage : public Image
     RawImage(int widht, int height);
     ~RawImage() override;
 
-    size_t width() const override;
-    size_t height() const override;
+    int width() const override;
+    int height() const override;
     const Pixel& get(int x, int y) const override;
-    Pixel& set(int x, int y) override;
+    void setColor(int x, int y, const Color& c) override;
 
   private:
     int m_width{0};

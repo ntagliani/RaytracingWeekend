@@ -10,6 +10,7 @@
 #include "MetalMaterial.h"
 #include "PPMImageSerializer.h"
 #include "RawImage.h"
+#include "Renderer.h"
 #include "Sphere.h"
 #include "Vec3.h"
 
@@ -31,9 +32,8 @@ int main(int argc, char** argv)
                             /*antialias_samples = */ 50};
     Camera camera;
     camera.init(camera_position, look_direction, settings);
-    camera.setProgress(&progressBar);
 
-    RawImage image{camera.width(), camera.height()};
+    RawImage image{400, static_cast<int>(400.0f / 16* 9)};
 
     // red Lambertian material
     const auto lambertianMaterial =
@@ -67,7 +67,10 @@ int main(int argc, char** argv)
     collection.addHittable(std::make_unique<Sphere>(Point{0.0f, -100.5f, 0.0f},
                                                     100.0f, soilMaterial));
 
-    camera.render(collection, &image);
+    Renderer renderer;
+    renderer.setProgress(&progressBar);
+    renderer.render(camera, collection, image);
+    //    camera.render(collection, &image);
 
     std::cout << "Serializing Image" << std::endl;
 
