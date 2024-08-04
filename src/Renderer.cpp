@@ -6,11 +6,11 @@
 #include "Progress.h"
 #include "Progression.h"
 #include "Ray.h"
+#include "TaskManager.h"
 
-void Renderer::setProgress(Progress* p)
-{
-    m_progress = p;
-}
+#include <chrono>
+
+void Renderer::setProgress(Progress* p) { m_progress = p; }
 void Renderer::updateSettings(const Camera& camera, const RenderTarget& target)
 {
     const auto height = target.height();
@@ -103,6 +103,8 @@ void Renderer::render(const Camera& camera, const Hittable& hittable,
         m_progress->initialize(progress);
     }
 
+    TaskManager tm;
+
     for (int y = 0; y < height; y++)
     {
         for (int x = 0; x < width; x++)
@@ -110,10 +112,15 @@ void Renderer::render(const Camera& camera, const Hittable& hittable,
             const vec3f pixel_pos = m_first_pixel_center +
                                     (m_delta_u * static_cast<float>(x)) +
                                     (m_delta_v * static_cast<float>(y));
-            const auto color =
-                antialias(camera.position(), pixel_pos, hittable);
+            std::function<void()> f = [pixel_pos, x, y, this, &hittable,
+                                       &target, &camera]() -> void
+            {
+                const auto color =
+                    antialias(camera.position(), pixel_pos, hittable);
 
-            target.setColor(x, y, color);
+                target.setColor(x, y, color);
+            };
+            tm.AddTask(f);
         }
         if (m_progress != nullptr)
         {
@@ -125,5 +132,10 @@ void Renderer::render(const Camera& camera, const Hittable& hittable,
     {
         progress.setValue({height, width});
         m_progress->complete(progress);
+    }
+    while (!tm.areAllDone())
+    {
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(10ms);
     }
 }

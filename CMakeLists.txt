@@ -79,6 +79,9 @@ set(SOURCES
   src/Renderer.h
   src/Sphere.cpp
   src/Sphere.h
+  src/TaskManager.cpp
+  src/TaskManager.h
+  src/TaskQueue.h
   src/Vec3.h )
 
 target_sources(RaytracingDemo PRIVATE ${SOURCES})
