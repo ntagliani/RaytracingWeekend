@@ -9,6 +9,7 @@
 #include "TaskManager.h"
 
 #include <chrono>
+#include <random>
 
 void Renderer::setProgress(Progress* p) { m_progress = p; }
 void Renderer::updateSettings(const Camera& camera, const RenderTarget& target)
@@ -103,6 +104,7 @@ void Renderer::render(const Camera& camera, const Hittable& hittable,
         m_progress->initialize(progress);
     }
 
+    {
     TaskManager tm;
 
     for (int y = 0; y < height; y++)
@@ -128,14 +130,16 @@ void Renderer::render(const Camera& camera, const Hittable& hittable,
             m_progress->update(progress);
         }
     }
-    if (m_progress != nullptr)
-    {
-        progress.setValue({height, width});
-        m_progress->complete(progress);
-    }
     while (!tm.areAllDone())
     {
         using namespace std::chrono_literals;
         std::this_thread::sleep_for(10ms);
+    }
+
+    }
+    if (m_progress != nullptr)
+    {
+        progress.setValue({height, width});
+        m_progress->complete(progress);
     }
 }

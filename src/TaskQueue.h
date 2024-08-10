@@ -68,6 +68,12 @@ class TaskQueue
         m_cv.notify_all();
     }
 
+    
+    void wakeUp()
+    {
+        m_cv.notify_one();
+    }
+
     bool isEmpty() const
     {
         std::unique_lock<std::mutex> l(m_mutex);
