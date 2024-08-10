@@ -81,6 +81,8 @@ set(SOURCES
   src/Sphere.h
   src/TaskManager.cpp
   src/TaskManager.h
+  src/ThreadName.cpp
+  src/ThreadName.h
   src/TaskQueue.h
   src/Vec3.h )
 
