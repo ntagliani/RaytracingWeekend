@@ -8,7 +8,6 @@
 #include "Ray.h"
 #include "TaskManager.h"
 
-#include <chrono>
 #include <random>
 
 void Renderer::setProgress(Progress* p) { m_progress = p; }
@@ -17,7 +16,7 @@ void Renderer::updateSettings(const Camera& camera, const RenderTarget& target)
     const auto height = target.height();
     const auto width = target.width();
 
-    const auto aspect_ratio = static_cast<float>(width) / height;
+    // const auto aspect_ratio = static_cast<float>(width) / height;
 
     const auto viewport_width = camera.viewportHeight() * width / height;
 
@@ -105,37 +104,36 @@ void Renderer::render(const Camera& camera, const Hittable& hittable,
     }
 
     {
-    TaskManager tm;
+        TaskManager tm;
 
-    for (int y = 0; y < height; y++)
-    {
-        for (int x = 0; x < width; x++)
+        for (int y = 0; y < height; y++)
         {
-            const vec3f pixel_pos = m_first_pixel_center +
-                                    (m_delta_u * static_cast<float>(x)) +
-                                    (m_delta_v * static_cast<float>(y));
-            std::function<void()> f = [pixel_pos, x, y, this, &hittable,
-                                       &target, &camera]() -> void
+            for (int x = 0; x < width; x++)
             {
-                const auto color =
-                    antialias(camera.position(), pixel_pos, hittable);
+                const vec3f pixel_pos = m_first_pixel_center +
+                                        (m_delta_u * static_cast<float>(x)) +
+                                        (m_delta_v * static_cast<float>(y));
+                std::function<void()> f = [pixel_pos, x, y, this, &hittable,
+                                           &target, &camera]() -> void
+                {
+                    const auto color =
+                        antialias(camera.position(), pixel_pos, hittable);
 
-                target.setColor(x, y, color);
-            };
-            tm.AddTask(f);
+                    target.setColor(x, y, color);
+                };
+                tm.AddTask(f);
+            }
+            if (m_progress != nullptr)
+            {
+                progress.setValue({y + 1, width});
+                m_progress->update(progress);
+            }
         }
-        if (m_progress != nullptr)
+        while (!tm.areAllDone())
         {
-            progress.setValue({y + 1, width});
-            m_progress->update(progress);
+            using namespace std::chrono_literals;
+            std::this_thread::sleep_for(10ms);
         }
-    }
-    while (!tm.areAllDone())
-    {
-        using namespace std::chrono_literals;
-        std::this_thread::sleep_for(10ms);
-    }
-
     }
     if (m_progress != nullptr)
     {
