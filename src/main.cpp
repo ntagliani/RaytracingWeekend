@@ -33,14 +33,14 @@ int main(int argc, char** argv)
     Camera camera;
     camera.init(camera_position, look_direction, settings);
 
-    RawImage image{400, static_cast<int>(400.0f / 16* 9)};
+    RawImage image{400, static_cast<int>(400.0f / 16 * 9)};
 
     // red Lambertian material
     const auto lambertianMaterial =
         std::make_shared<LambertianMaterial>(Color(1.0f, 0.0f, 0.0f));
 
-    const auto metalMaterial =
-        std::make_shared<MetalMaterial>(Color(1.0f, 200.0f / 256, 90.0f / 256));
+    const auto metalMaterial = std::make_shared<MetalMaterial>(
+        Color(1.0f, 200.0f / 256, 90.0f / 256), 0.0f);
     // soil material (gree-ish)
     const auto soilMaterial =
         std::make_shared<LambertianMaterial>(Color(.2f, 0.8f, 0.0f));
