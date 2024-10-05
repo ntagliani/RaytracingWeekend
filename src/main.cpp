@@ -9,6 +9,7 @@
 #include "Mesh.h"
 #include "MetalMaterial.h"
 #include "PPMImageSerializer.h"
+#include "PlyLoader.h"
 #include "RawImage.h"
 #include "Renderer.h"
 #include "Sphere.h"
@@ -20,7 +21,7 @@ int main(int argc, char** argv)
     std::cout << "Rendering Image" << std::endl;
     const auto startTime = std::chrono::high_resolution_clock::now();
 
-    const vec3f camera_position{0, 0, 0};
+    const vec3f camera_position{0, 0, 1.0};
     const vec3f look_direction{0, 0, -1.0f};
 
     ConsoleProgressBar progressBar("Rendering");
@@ -28,8 +29,7 @@ int main(int argc, char** argv)
     CameraSettings settings{/* focal_length = */ 1.0f,
                             /*aspect_ratio =*/16.0f / 9,
                             /* viewport_heigh = */ 2.0f,
-                            /*image_width = */ 400,
-                            /*antialias_samples = */ 50};
+                            /*image_width = */ 400};
     Camera camera;
     camera.init(camera_position, look_direction, settings);
 
@@ -41,9 +41,18 @@ int main(int argc, char** argv)
 
     const auto metalMaterial = std::make_shared<MetalMaterial>(
         Color(1.0f, 200.0f / 256, 90.0f / 256), 0.0f);
+
+    // red Lambertian material
+    const auto blueLambertianMaterial =
+        std::make_shared<LambertianMaterial>(Color(0.0f, 0.0f, 0.8f));
+
     // soil material (gree-ish)
     const auto soilMaterial =
         std::make_shared<LambertianMaterial>(Color(.2f, 0.8f, 0.0f));
+
+    auto bunny =
+        import(std::string_view("bunny_lowpoly.ply"), blueLambertianMaterial);
+
     HittableCollection collection;
     const std::vector<vec3f> vertices{{-1.5, 0.0f, -1.0f},
                                       {-1.25f, 0.0f, -1.25f},
@@ -58,16 +67,18 @@ int main(int argc, char** argv)
                            {100.f, -40.0f, -1.0f},
                            {-100.f, 40.0f, -1.0f}},
         std::vector<vec3i>{{0, 1, 2}}, lambertianMaterial);
+    collection.addHittable(std::make_unique<Sphere>(Point{0.0f, -100.5f, 0.0f},
+                                                    100.0f, soilMaterial));
     collection.addHittable(std::move(mesh));
 
     collection.addHittable(std::make_unique<Sphere>(Point{0.0f, 0.0f, -1.0f},
                                                     0.5f, lambertianMaterial));
     collection.addHittable(std::make_unique<Sphere>(Point{1.0f, 0.0f, -1.25f},
                                                     .35f, metalMaterial));
-    collection.addHittable(std::make_unique<Sphere>(Point{0.0f, -100.5f, 0.0f},
-                                                    100.0f, soilMaterial));
+    if (bunny)
+        collection.addHittable(std::move(bunny));
 
-    Renderer renderer;
+    Renderer renderer(/* antialiasSample = */ 16);
     renderer.setProgress(&progressBar);
     renderer.render(camera, collection, image);
     //    camera.render(collection, &image);

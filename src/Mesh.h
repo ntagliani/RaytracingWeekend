@@ -10,7 +10,7 @@ class Material;
 class Mesh : public Hittable
 {
   public:
-    Mesh(const std::vector<vec3f> vertices, const std::vector<vec3i> triangles,
+    Mesh(std::vector<vec3f> vertices, std::vector<vec3i> triangles,
          std::shared_ptr<Material> material);
     ~Mesh() override;
 

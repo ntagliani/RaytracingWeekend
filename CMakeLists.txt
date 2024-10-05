@@ -20,12 +20,16 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 # generate the command commands exports
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 #include(CacheVariables)
 #include(FilterFunctions)
 
+find_package(happly)
+
 add_executable(RaytracingDemo)
+
+target_link_libraries(RaytracingDemo happly::happly)
 
 if(MSVC)
   add_compile_options("/WX /W4")
@@ -47,10 +51,10 @@ if(APPLE)
 endif()
 
 set(SOURCES
-	src/Camera.cpp
-	src/Camera.h
-	src/ConsoleProgressBar.cpp
-	src/ConsoleProgressBar.h
+  src/Camera.cpp
+  src/Camera.h
+  src/ConsoleProgressBar.cpp
+  src/ConsoleProgressBar.h
   src/CommonDefines.h
   src/HitRecord.h
   src/Hittable.h
@@ -66,10 +70,12 @@ set(SOURCES
   src/Mesh.h
   src/MetalMaterial.cpp
   src/MetalMaterial.h
+  src/PlyLoader.cpp
+  src/PlyLoader.h
   src/PPMImageSerialier.cpp
   src/PPMImageSerializer.h
-	src/Progress.h
-	src/Progression.h
+  src/Progress.h
+  src/Progression.h
   src/Random.h
   src/RawImage.cpp
   src/RawImage.h

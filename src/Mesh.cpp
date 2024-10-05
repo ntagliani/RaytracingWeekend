@@ -1,8 +1,8 @@
 #include "Mesh.h"
 #include "HitRecord.h"
 
-Mesh::Mesh(const std::vector<vec3f> vertices,
-           const std::vector<vec3i> triangles,
+Mesh::Mesh(std::vector<vec3f> vertices,
+           std::vector<vec3i> triangles,
            std::shared_ptr<Material> material)
     : m_vertices(std::move(vertices)), m_triangles(std::move(triangles)),
       m_material(material)

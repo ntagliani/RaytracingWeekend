@@ -10,7 +10,16 @@
 
 #include <random>
 
+// uncoment the line below to force single thread execution
+// #define FORCE_SINGLE_THREAD
+constexpr int MAX_RECURSION = 20;
+
+Renderer::Renderer(int antialiasSamples) : m_antialias_samples(antialiasSamples)
+{
+}
+
 void Renderer::setProgress(Progress* p) { m_progress = p; }
+
 void Renderer::updateSettings(const Camera& camera, const RenderTarget& target)
 {
     const auto height = target.height();
@@ -40,7 +49,7 @@ Color Renderer::antialias(const vec3f& camera_position, const vec3f& pixel_pos,
     {
         const vec3f direction = pixel_pos - camera_position;
         const Ray r{camera_position, direction};
-        return rayColor(r, hittable, 20);
+        return rayColor(r, hittable, MAX_RECURSION);
     }
 
     static std::random_device
@@ -55,7 +64,7 @@ Color Renderer::antialias(const vec3f& camera_position, const vec3f& pixel_pos,
         const vec3f rand_v = (m_delta_v * dis(gen));
         const vec3f direction = (pixel_pos + rand_u + rand_v) - camera_position;
         const Ray r{camera_position, direction};
-        sample += rayColor(r, hittable, 10);
+        sample += rayColor(r, hittable, MAX_RECURSION);
     }
     return sample / static_cast<float>(m_antialias_samples);
 }
@@ -121,7 +130,11 @@ void Renderer::render(const Camera& camera, const Hittable& hittable,
 
                     target.setColor(x, y, color);
                 };
+#ifdef FORCE_SINGLE_THREAD
+                f();
+#else
                 tm.AddTask(f);
+#endif
             }
             if (m_progress != nullptr)
             {
@@ -132,7 +145,7 @@ void Renderer::render(const Camera& camera, const Hittable& hittable,
         while (!tm.areAllDone())
         {
             using namespace std::chrono_literals;
-            std::this_thread::sleep_for(10ms);
+            std::this_thread::yield();
         }
     }
     if (m_progress != nullptr)

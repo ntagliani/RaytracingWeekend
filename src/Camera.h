@@ -13,7 +13,6 @@ struct CameraSettings
     float aspect_ratio = 16.0f / 9;
     float viewport_height = 2.0f;
     int width = 1024;
-    int antialias_samples = 10;
 };
 
 class Camera
