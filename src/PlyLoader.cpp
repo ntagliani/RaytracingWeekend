@@ -4,6 +4,8 @@
 
 #include <happly.h>
 
+#include <algorithm>
+
 std::unique_ptr<Mesh> import(std::string_view path,
                              std::shared_ptr<Material> material)
 {

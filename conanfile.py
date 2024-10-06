@@ -6,5 +6,5 @@ class RaytracingWeekend(ConanFile):
 
     def requirements(self):
         self.requires("happly/cci.20200822")
-        # self.requires("gtest/1.15.0")
+        self.requires("gtest/1.15.0")
 

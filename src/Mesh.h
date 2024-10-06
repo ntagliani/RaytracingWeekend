@@ -1,6 +1,7 @@
 
 #pragma once
 #include "Hittable.h"
+#include "Aabb.h"
 
 #include <memory>
 #include <optional>
@@ -26,4 +27,5 @@ class Mesh : public Hittable
     std::vector<vec3f> m_normals;
 
     std::shared_ptr<Material> m_material;
+    Aabb m_aabb;
 };
