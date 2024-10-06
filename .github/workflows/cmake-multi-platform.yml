@@ -48,12 +48,31 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Cache conan packages
+      id: conan-cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.conan2
+        key: ${{ runner.os }}-build-${{ matrix.cpp_compiler }}-${{ matrix.build_type }}-${{ hashFiles('conanfile.py') }}
+
+    - name: Install conan
+      id: conan
+      uses: turtlebrowser/get-conan@main
+
+    - name: Detect default conan profile
+      # detect a profile and -e prevents from returning an error in case the profile already exists
+      run: conan profile detect -e
+
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
       id: strings
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: Conan install dependencies
+      run: conan install . -s build_type=${{ matrix.build_type }} --build=missing --output-folder ${{ steps.strings.outputs.build-output-dir }}
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
@@ -63,11 +82,14 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DCMAKE_TOOLCHAIN_FILE=${{ steps.strings.outputs.build-output-dir }}/conan_toolchain.cmake
+        -DCMAKE_POLICY_DEFAULT_CMP0091=NEW
         -S ${{ github.workspace }}
 
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
   approve:
     needs: build
     runs-on: ubuntu-latest

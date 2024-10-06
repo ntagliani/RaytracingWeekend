@@ -1,6 +1,6 @@
 # Project definition
-cmake_minimum_required(VERSION 3.12)
-project(RaytracingWeekend)
+cmake_minimum_required(VERSION 3.24)
+project(RaytracingWeekend LANGUAGES CXX)
 
 # Version
 # set(CoreLib_VERSION_MAJOR 0)
