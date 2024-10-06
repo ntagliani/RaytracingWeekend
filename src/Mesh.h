@@ -1,6 +1,7 @@
 
 #pragma once
 #include "Hittable.h"
+#include "Aabb.h"
 
 #include <memory>
 #include <optional>
@@ -10,7 +11,7 @@ class Material;
 class Mesh : public Hittable
 {
   public:
-    Mesh(const std::vector<vec3f> vertices, const std::vector<vec3i> triangles,
+    Mesh(std::vector<vec3f> vertices, std::vector<vec3i> triangles,
          std::shared_ptr<Material> material);
     ~Mesh() override;
 
@@ -26,4 +27,5 @@ class Mesh : public Hittable
     std::vector<vec3f> m_normals;
 
     std::shared_ptr<Material> m_material;
+    Aabb m_aabb;
 };

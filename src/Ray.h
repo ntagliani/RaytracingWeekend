@@ -11,8 +11,10 @@ class Ray
     void setOrigin(const Point& origin);
     void setDirection(const vec3f& direction);
     Point at(float t) const;
+    const vec3f& inverseDirection() const;
 
   private:
     Point m_origin;
     vec3f m_direction;
+    vec3f m_inv_direction;
 };

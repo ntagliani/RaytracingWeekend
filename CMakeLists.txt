@@ -1,6 +1,6 @@
 # Project definition
-cmake_minimum_required(VERSION 3.12)
-project(RaytracingWeekend)
+cmake_minimum_required(VERSION 3.24)
+project(RaytracingWeekend LANGUAGES CXX)
 
 # Version
 # set(CoreLib_VERSION_MAJOR 0)
@@ -20,12 +20,21 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 # generate the command commands exports
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 #include(CacheVariables)
 #include(FilterFunctions)
 
+find_package(happly)
+find_package(GTest REQUIRED)
+
 add_executable(RaytracingDemo)
+add_custom_command(TARGET RaytracingDemo POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/testdata/ $<TARGET_FILE_DIR:RaytracingDemo> COMMENT "Copying test data to output folders $<TARGET_FILE_DIR:RaytracingDemo>")
+
+add_executable(TestRaytracing)
+
+target_link_libraries(TestRaytracing happly::happly gtest::gtest)
+target_link_libraries(RaytracingDemo happly::happly)
 
 if(MSVC)
   add_compile_options("/WX /W4")
@@ -47,10 +56,12 @@ if(APPLE)
 endif()
 
 set(SOURCES
-	src/Camera.cpp
-	src/Camera.h
-	src/ConsoleProgressBar.cpp
-	src/ConsoleProgressBar.h
+  src/Aabb.cpp
+  src/Aabb.h
+  src/Camera.cpp
+  src/Camera.h
+  src/ConsoleProgressBar.cpp
+  src/ConsoleProgressBar.h
   src/CommonDefines.h
   src/HitRecord.h
   src/Hittable.h
@@ -58,7 +69,6 @@ set(SOURCES
   src/HittableCollection.h
   src/Image.h
   src/Interval.h
-  src/main.cpp
   src/LambertianMaterial.cpp
   src/LambertianMaterial.h
   src/Material.h
@@ -66,10 +76,12 @@ set(SOURCES
   src/Mesh.h
   src/MetalMaterial.cpp
   src/MetalMaterial.h
+  src/PlyLoader.cpp
+  src/PlyLoader.h
   src/PPMImageSerialier.cpp
   src/PPMImageSerializer.h
-	src/Progress.h
-	src/Progression.h
+  src/Progress.h
+  src/Progression.h
   src/Random.h
   src/RawImage.cpp
   src/RawImage.h
@@ -86,5 +98,12 @@ set(SOURCES
   src/TaskQueue.h
   src/Vec3.h )
 
-target_sources(RaytracingDemo PRIVATE ${SOURCES})
+target_sources(RaytracingDemo PRIVATE ${SOURCES} src/main.cpp)
+
+set(TESTSOURCES
+  tests/testAabb.cpp
+)
+target_include_directories(TestRaytracing PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+target_sources(TestRaytracing PRIVATE ${SOURCES} ${TESTSOURCES} tests/testmain.cpp)
 

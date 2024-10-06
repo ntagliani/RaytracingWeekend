@@ -19,6 +19,7 @@ class RenderTarget
 class Renderer
 {
   public:
+    Renderer(int antialiasSamples);
     void setProgress(Progress* p);
     void render(const Camera& camera, const Hittable& hitable,
                 RenderTarget& target);

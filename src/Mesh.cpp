@@ -1,13 +1,18 @@
 #include "Mesh.h"
 #include "HitRecord.h"
 
-Mesh::Mesh(const std::vector<vec3f> vertices,
-           const std::vector<vec3i> triangles,
+Mesh::Mesh(std::vector<vec3f> vertices, std::vector<vec3i> triangles,
            std::shared_ptr<Material> material)
-    : m_vertices(std::move(vertices)), m_triangles(std::move(triangles)),
-      m_material(material)
+    : m_vertices(std::move(vertices))
+    , m_triangles(std::move(triangles))
+    , m_material(material)
 {
     m_normals.reserve(m_triangles.size());
+
+    for (const auto& vertex : m_vertices)
+    {
+        m_aabb.growToInclude(vertex);
+    }
 
     for (const auto& tr : m_triangles)
     {
@@ -26,6 +31,9 @@ Mesh::~Mesh() = default;
 bool Mesh::hit(const Ray& ray, const Interval& interval,
                HitRecord* record) const
 {
+    if (!m_aabb.intersect(ray))
+        return false;
+
     for (int i = 0; i < m_triangles.size(); ++i)
     {
         const auto intersection = rayIntersectsTriangle(ray, i);

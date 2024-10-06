@@ -15,12 +15,14 @@
     {                                                                          \
         return fieldname[pos];                                                 \
     }                                                                          \
-    template <typename U = T> typename std::enable_if_t<(N > pos), U>& name()  \
+    template <typename U = T>                                                  \
+    typename std::enable_if_t<(N > pos), U>& name()                            \
     {                                                                          \
         return fieldname[pos];                                                 \
     }
 
-template <typename T, size_t N> class vec
+template <typename T, size_t N>
+class vec
 {
   public:
     using value_type = T;
@@ -48,7 +50,8 @@ template <typename T, size_t N> class vec
         }
     }
 
-    template <typename Arg, typename... Args> vec(Arg value, Args... args)
+    template <typename Arg, typename... Args>
+    vec(Arg value, Args... args)
     {
         assign<0>(value, args...);
     }
@@ -102,7 +105,8 @@ template <typename T, size_t N> class vec
     std::array<T, N> m_data;
 };
 
-template <typename T> class vec3
+template <typename T>
+class vec3
 {
   public:
     vec3() : e{0, 0, 0} {}
@@ -186,12 +190,24 @@ inline std::ostream& operator<<(std::ostream& out, const vec3<T>& v)
 }
 
 template <typename T>
+inline bool operator<(const vec3<T>& u, const vec3<T>& v)
+{
+    return u[0] < v[0] && u[1] < v[1] && u[2] < v[2];
+}
+
+template <typename T>
+inline bool operator<=(const vec3<T>& u, const vec3<T>& v)
+{
+    return u[0] <= v[0] && u[1] <= v[1] && u[2] <= v[2]; }
+
+template <typename T>
 inline vec3<T> operator+(const vec3<T>& u, const vec3<T>& v)
 {
     return vec3<T>(u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2]);
 }
 
-template <typename T> inline vec3<T> operator+(const vec3<T>& u, const T v)
+template <typename T>
+inline vec3<T> operator+(const vec3<T>& u, const T v)
 {
     return vec3<T>(u.e[0] + v, u.e[1] + v, u.e[2] + v);
 }
@@ -208,39 +224,52 @@ inline vec3<T> operator*(const vec3<T>& u, const vec3<T>& v)
     return vec3<T>(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]);
 }
 
-template <typename T> inline vec3<T> operator*(T t, const vec3<T>& v)
+template <typename T>
+inline vec3<T> operator*(T t, const vec3<T>& v)
 {
     return vec3<T>(t * v.e[0], t * v.e[1], t * v.e[2]);
 }
 
-template <typename T> inline vec3<T> operator*(const vec3<T>& v, T t)
+template <typename T>
+inline vec3<T> operator*(const vec3<T>& v, T t)
 {
     return t * v;
 }
 
-template <typename T> inline vec3<T> operator/(vec3<T> v, T t)
+template <typename T>
+inline vec3<T> operator/(vec3<T> v, T t)
 {
     return (1 / t) * v;
 }
 
-template <typename T> inline T dot(const vec3<T>& u, const vec3<T>& v)
+template <typename T>
+inline vec3<T> operator/(T t, vec3<T> v)
+{
+    return {t / v[0], t / v[1], t/v[2]};
+}
+
+template <typename T>
+inline T dot(const vec3<T>& u, const vec3<T>& v)
 {
     return u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2];
 }
 
-template <typename T> inline vec3<T> cross(const vec3<T>& u, const vec3<T>& v)
+template <typename T>
+inline vec3<T> cross(const vec3<T>& u, const vec3<T>& v)
 {
     return vec3<T>(u.e[1] * v.e[2] - u.e[2] * v.e[1],
                    u.e[2] * v.e[0] - u.e[0] * v.e[2],
                    u.e[0] * v.e[1] - u.e[1] * v.e[0]);
 }
 
-template <typename T> inline vec3<T> unit_vector(vec3<T> v)
+template <typename T>
+inline vec3<T> unit_vector(vec3<T> v)
 {
     return v / v.length();
 }
 
-template <typename T> inline vec3<T> random_unit_vector()
+template <typename T>
+inline vec3<T> random_unit_vector()
 {
     return unit_vector(vec3<T>::random(T(-1), T(1)));
 }
