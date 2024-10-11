@@ -14,8 +14,14 @@ Mesh::Mesh(std::vector<vec3f> vertices, std::vector<vec3i> triangles,
         m_aabb.growToInclude(vertex);
     }
 
-    for (const auto& tr : m_triangles)
+    m_vertex_to_triangle.resize(m_vertices.size());
+    for (int trIndex = 0; trIndex < m_triangles.size(); trIndex++)
     {
+        auto& tr = m_triangles[trIndex];
+
+        m_vertex_to_triangle[tr.x()].push_back(trIndex);
+        m_vertex_to_triangle[tr.y()].push_back(trIndex);
+        m_vertex_to_triangle[tr.z()].push_back(trIndex);
 
         const auto& v1 = m_vertices[tr.x()];
         const auto& v2 = m_vertices[tr.y()];
@@ -27,6 +33,21 @@ Mesh::Mesh(std::vector<vec3f> vertices, std::vector<vec3i> triangles,
 }
 
 Mesh::~Mesh() = default;
+
+const std::vector<vec3f>& Mesh::vertices() const
+{
+    return m_vertices;
+}
+
+const std::vector<vec3i>& Mesh::triangles() const
+{
+    return m_triangles;
+}
+
+const std::vector<vec3f>& Mesh::normals() const
+{
+    return m_normals;
+}
 
 bool Mesh::hit(const Ray& ray, const Interval& interval,
                HitRecord* record) const

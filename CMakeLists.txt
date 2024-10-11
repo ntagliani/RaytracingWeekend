@@ -58,6 +58,8 @@ endif()
 set(SOURCES
   src/Aabb.cpp
   src/Aabb.h
+  src/Bvh.cpp
+  src/Bvh.h
   src/Camera.cpp
   src/Camera.h
   src/ConsoleProgressBar.cpp
