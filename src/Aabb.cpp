@@ -2,6 +2,14 @@
 
 #include <cmath>
 
+Aabb::Aabb() = default;
+
+Aabb::Aabb(vec3f min, vec3f max)
+    : m_min(min)
+    , m_max(max)
+{
+}
+
 vec3f Aabb::min() const
 {
     return m_min;

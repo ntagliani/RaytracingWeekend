@@ -9,6 +9,8 @@
 class Aabb
 {
   public:
+    Aabb();
+    Aabb(vec3f min, vec3f max);
     vec3f min() const;
     vec3f max() const;
     vec3f extent() const;
